@@ -8,6 +8,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
@@ -31,7 +32,7 @@ public class Partida {
 	@Column
 	String estat;
 
-	@OneToMany(mappedBy = "partida")
+	@ManyToMany(mappedBy = "partida")
 	Set<Jugador> jugadors;
 
 	public Date getDataInici() {

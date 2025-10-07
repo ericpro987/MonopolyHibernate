@@ -1,11 +1,14 @@
 import java.util.HashSet;
 import java.util.Set;
 
+import org.hibernate.annotations.ColumnDefault;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
@@ -19,10 +22,11 @@ public class Jugador {
 	@Column
 	int id;
 
-	@Column
+	@Column(length = 50)
 	String nom;
 
-	@Column
+	@Column(nullable = false)
+	@ColumnDefault(value = "true")
 	boolean viu;
 
 	@Column
@@ -34,8 +38,8 @@ public class Jugador {
 	@Column
 	int victories;
 
-	@ManyToOne
-	Partida partida;
+	@ManyToMany
+	Set<Partida> partides;
 
 	@OneToOne(mappedBy = "jugador")
 	Fitxa fitxa;
@@ -83,12 +87,12 @@ public class Jugador {
 		this.victories = victories;
 	}
 
-	public Partida getPartida() {
-		return partida;
+	public Set<Partida> getPartides() {
+		return partides;
 	}
 
-	public void setPartida(Partida partida) {
-		this.partida = partida;
+	public void setPartides(Set<Partida> partides) {
+		this.partides = partides;
 	}
 
 	public Fitxa getFitxa() {
@@ -109,6 +113,8 @@ public class Jugador {
 
 	public Jugador() {
 		super();
+		viu = true;
+		this.partides = new HashSet<Partida>();
 	}
 
 	public Jugador(String nom, boolean viu, int ordre, int diners, int victories, Partida partida, Fitxa fitxa) {
@@ -118,7 +124,7 @@ public class Jugador {
 		this.ordre = ordre;
 		this.diners = diners;
 		this.victories = victories;
-		this.partida = partida;
+		this.partides = new HashSet<Partida>();
 		this.fitxa = fitxa;
 	}
 
