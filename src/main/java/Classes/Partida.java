@@ -1,3 +1,4 @@
+package Classes;
 import java.time.DateTimeException;
 import java.util.Date;
 import java.util.HashSet;
@@ -32,7 +33,7 @@ public class Partida {
 	@Column
 	String estat;
 
-	@ManyToMany(mappedBy = "partida")
+	@ManyToMany(mappedBy = "partides")
 	Set<Jugador> jugadors;
 
 	public Date getDataInici() {

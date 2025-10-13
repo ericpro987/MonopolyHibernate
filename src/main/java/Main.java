@@ -9,6 +9,14 @@ import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.service.ServiceRegistry;
 
+import Classes.Carrer;
+import Classes.Color;
+import Classes.CompanyiaServeis;
+import Classes.Ferrocarril;
+import Classes.Jugador;
+import Classes.Partida;
+import Classes.TipusServei;
+
 public class Main {
 
 	private static Session session;
@@ -47,14 +55,14 @@ public class Main {
 		Ferrocarril f2 = new Ferrocarril();
 		Ferrocarril f3 = new Ferrocarril();
 		Ferrocarril f4 = new Ferrocarril();
-		f1.seguentFerro = f2;
-		f1.antFerro = f4;
-		f2.antFerro = f1;
-		f2.seguentFerro = f3;
-		f3.antFerro = f2;
-		f3.seguentFerro = f4;
-		f4.antFerro = f3;
-		f4.seguentFerro = f1;
+		f1.setSeguentFerro(f2);
+		f1.setAntFerro(f4);
+		f2.setAntFerro(f1);
+		f2.setSeguentFerro(f3);
+		f3.setAntFerro(f2);
+		f3.setSeguentFerro(f4);
+		f4.setAntFerro(f3);
+		f4.setSeguentFerro(f1);
 		session.persist(f1);
 		session.persist(f2);
 		session.persist(f3);
@@ -71,49 +79,49 @@ public class Main {
 				Carrer carrer = new Carrer();
 				if (i < 2) {
 					for (Color c : ((Set<Color>) session.createQuery("from color").list())) {
-						if (c.nom.equals("marro")) {
+						if (c.getNom().equals("marro")) {
 							carrer.setColor(c);
 						}
 					}
 				} else if (i < 5) {
 					for (Color c : ((Set<Color>) session.createQuery("from color").list())) {
-						if (c.nom.equals("blau claret")) {
+						if (c.getNom().equals("blau claret")) {
 							carrer.setColor(c);
 						}
 					}
 				} else if (i < 8) {
 					for (Color c : ((Set<Color>) session.createQuery("from color").list())) {
-						if (c.nom.equals("rosa")) {
+						if (c.getNom().equals("rosa")) {
 							carrer.setColor(c);
 						}
 					}
 				} else if (i < 11) {
 					for (Color c : ((Set<Color>) session.createQuery("from color").list())) {
-						if (c.nom.equals("taronja")) {
+						if (c.getNom().equals("taronja")) {
 							carrer.setColor(c);
 						}
 					}
 				} else if (i < 14) {
 					for (Color c : ((Set<Color>) session.createQuery("from color").list())) {
-						if (c.nom.equals("vermell")) {
+						if (c.getNom().equals("vermell")) {
 							carrer.setColor(c);
 						}
 					}
 				} else if (i < 17) {
 					for (Color c : ((Set<Color>) session.createQuery("from color").list())) {
-						if (c.nom.equals("groc")) {
+						if (c.getNom().equals("groc")) {
 							carrer.setColor(c);
 						}
 					}
 				} else if (i < 20) {
 					for (Color c : ((Set<Color>) session.createQuery("from color").list())) {
-						if (c.nom.equals("verd")) {
+						if (c.getNom().equals("verd")) {
 							carrer.setColor(c);
 						}
 					}
 				} else {
 					for (Color c : ((Set<Color>) session.createQuery("from color").list())) {
-						if (c.nom.equals("blau fosc")) {
+						if (c.getNom().equals("blau fosc")) {
 							carrer.setColor(c);
 						}
 					}
