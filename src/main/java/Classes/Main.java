@@ -1,21 +1,16 @@
+package Classes;
 import java.text.DateFormat;
 import java.time.Instant;
 import java.util.Date;
 import java.util.Set;
+
+import Classes.Propietat;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.service.ServiceRegistry;
-
-import Classes.Carrer;
-import Classes.Color;
-import Classes.CompanyiaServeis;
-import Classes.Ferrocarril;
-import Classes.Jugador;
-import Classes.Partida;
-import Classes.TipusServei;
 
 public class Main {
 

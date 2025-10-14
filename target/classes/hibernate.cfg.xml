@@ -20,14 +20,14 @@
 
 		<!-- AQUI POSEU LES CLASSES QUE REPRESENTEN TAULES QUE FEU SERVIR -->
 		<!-- si us ho deixeu: error:  does not belong to the same persistence unit-->
-		<mapping class="Propietat" />
-		<mapping class="Carrer" />
-		<mapping class="Color" />
-		<mapping class="CompanyiaServeis" />
-		<mapping class="Ferrocarril" />
-		<mapping class="Fitxa" />
-		<mapping class="Jugador" />
-		<mapping class="Partida" />
+		<mapping class="Classes.Propietat" />
+		<mapping class="Classes.Carrer" />
+		<mapping class="Classes.Color" />
+		<mapping class="Classes.CompanyiaServeis" />
+		<mapping class="Classes.Ferrocarril" />
+		<mapping class="Classes.Fitxa" />
+		<mapping class="Classes.Jugador" />
+		<mapping class="Classes.Partida" />
 
 	</session-factory>
 </hibernate-configuration>
