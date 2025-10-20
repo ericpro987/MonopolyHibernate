@@ -8,6 +8,7 @@ import java.util.Random;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
 
 import Classes.Carrer;
 import Classes.CompanyiaServeis;
@@ -101,13 +102,36 @@ public class PartidaDAO implements IPartidaDAO{
 	@Override
 	public Jugador Reassignar() {
 		// TODO Auto-generated method stub
+		Session session = sessionFactory.openSession();
+		session.getTransaction().begin();
+		Query<Jugador> query = session.createQuery("select * from jugador where diners < 0");
+		List<Jugador> bancaRota = query.list();
+		for (Jugador jugador : bancaRota) {
+			jugador.setViu(false);
+			jugador.getPropietats().clear();
+			session.merge(jugador);
+		}
+		Query<Jugador> query2 = session.createQuery("select * from jugador");
+		List<Jugador> jugadorsActuals = query2.list();
+		if(jugadorsActuals.size() == 1) {
+			Jugador winner = jugadorsActuals.get(0);
+			winner.setVictories(winner.getVictories()+1);
+			Query<Partida> query3 = session.createQuery("select * from partida where dataFi is null");
+			Partida partida = query3.getSingleResult();
+			partida.setDataFi(new Date());
+			session.merge(partida);
+			session.merge(winner);
+			session.close();
+			return winner;
+		}
+		session.close();
 		return null;
 	}
 
 	@Override
 	public void Start() {
 		// TODO Auto-generated method stub
-		Session session = sessionFactory.getCurrentSession();
+		Session session = sessionFactory.openSession();
 		session.beginTransaction();
 		Partida p = new Partida();
 		p.setDataInici(new Date());
@@ -135,10 +159,19 @@ public class PartidaDAO implements IPartidaDAO{
 		Fitxa f3 = new Fitxa();
 		f3.setPosicio(0);
 		f3.setJugador(j3);
+		Jugador j4 = new Jugador();
+		j4.setNom("Jugador3");
+		j4.setViu(true);
+		j4.getPartides().add(p);
+		p.getJugadors().add(j4);
+		Fitxa f4 = new Fitxa();
+		f4.setPosicio(0);
+		f4.setJugador(j3);
 		List<Jugador> list = new ArrayList<Jugador>();
 		list.add(j1);
 		list.add(j2);
 		list.add(j3);
+		list.add(j4);
 		Collections.shuffle(list);
 		for(int i = 0; i < list.size(); i++) {
 			list.get(i).setOrdre(i+1);
@@ -148,10 +181,13 @@ public class PartidaDAO implements IPartidaDAO{
 		session.persist(j1);
 		session.persist(j2);
 		session.persist(j3);
+		session.persist(j4);
 		session.persist(f1);
 		session.persist(f2);
 		session.persist(f3);
+		session.persist(f4);
 		session.getTransaction().commit();
+		session.close();
 	}
 	public static int dau = 0;
 	@Override
@@ -186,7 +222,7 @@ public class PartidaDAO implements IPartidaDAO{
 			}
 		}else if(p instanceof Carrer){
 			CarrerDAO c = new CarrerDAO();
-			c.PagarLloguer(jugador, p);
+				c.PagarLloguer(jugador, p);
 		}else if(p instanceof Ferrocarril){
 			FerrocarrilDAO fDAO = new FerrocarrilDAO();
 			fDAO.PagarLloguer(jugador, p);
@@ -195,11 +231,16 @@ public class PartidaDAO implements IPartidaDAO{
 			csDAO.PagarLloguer(jugador, p);
 		}
 	}
-
+	int torn = 0;
 	@Override
 	public void PassarTorn() {
 		// TODO Auto-generated method stub
-		
+		Session session = sessionFactory.openSession();
+		torn++;
+		torn = torn%4;
+	}
+	public int getTorn() {
+		return torn;
 	}
 
 }
