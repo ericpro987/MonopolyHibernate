@@ -3,7 +3,7 @@ package DAO;
 import Classes.Carrer;
 import Classes.Jugador;
 
-public interface ICarrerDAO extends IGenericDAO<Carrer, Integer>{
+public interface ICarrerDAO extends IPropietatDAO<Carrer, Integer>{
 	
 	boolean ComprovarColorComplet(Carrer carrer);
 	

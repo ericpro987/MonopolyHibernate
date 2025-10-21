@@ -1,7 +1,10 @@
 package DAO;
 
+import java.lang.reflect.ParameterizedType;
+import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
@@ -36,10 +39,24 @@ public class CarrerDAO implements ICarrerDAO{
 		// TODO Auto-generated method stub
 		
 	}
-
+	private Class<Carrer> getEntityClass() {
+		return (Class<Carrer>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+	}
 	@Override
 	public List<Carrer> findAll() {
 		// TODO Auto-generated method stub
+		Session session = sessionFactory.getCurrentSession();
+		try {
+			session.beginTransaction();
+			List<Carrer> list = session.createQuery("SELECT e FROM " + getEntityClass().getName() + " e").list();
+			return list;
+		} catch (HibernateException e) {
+
+		} finally {
+			session.getTransaction().commit();
+			session.close();
+
+		}
 		return null;
 	}
 
@@ -92,7 +109,17 @@ public class CarrerDAO implements ICarrerDAO{
 		jugador.setDiners(jugador.getDiners()-calcularLloguerCarrer(c));
 		return true;
 	}
-
+	public List<Carrer> GetCarrerByColor(String color){
+		List<Carrer> list = new ArrayList<Carrer>();
+		List<Carrer> prov = findAll();
+		for (Carrer carrer : prov) {
+			if(carrer.getColor().getNom().equals(color))
+				list.add(carrer);
+		}
+		if(list.isEmpty())
+			System.err.println("No existeix aquest color");
+		return list;
+	}
 	@Override
 	public boolean ComprovarColorComplet(Carrer carrer) {
 		Jugador propietari = carrer.getJugador();

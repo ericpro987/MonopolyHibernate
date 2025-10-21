@@ -5,7 +5,7 @@ import java.util.List;
 import Classes.Ferrocarril;
 import Classes.Jugador;
 
-public interface IFerrocarrilDAO extends IGenericDAO<Ferrocarril, Integer>{
+public interface IFerrocarrilDAO extends IPropietatDAO<Ferrocarril, Integer>{
 
 	List<Ferrocarril> ferrocarrilsVeins(Ferrocarril ferrocarril);
 	

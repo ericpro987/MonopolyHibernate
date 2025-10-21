@@ -1,11 +1,14 @@
 package DAO;
 
+import java.io.Serializable;
+import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
@@ -18,7 +21,7 @@ import Classes.Jugador;
 import Classes.Partida;
 import Classes.Propietat;
 
-public class PartidaDAO implements IPartidaDAO{
+public class PartidaDAO implements IPartidaDAO<Partida, Integer>{
 
 	protected SessionFactory sessionFactory;
 
@@ -27,76 +30,34 @@ public class PartidaDAO implements IPartidaDAO{
 		sessionFactory = SessionManager.getSessionFactory();
 
 	}
-	@Override
-	public void SaveOrUpdate(Partida entity) {
-		// TODO Auto-generated method stub
-		
-	}
+
 
 	@Override
 	public void delete(Integer id) {
 		// TODO Auto-generated method stub
 		
 	}
-
-	@Override
-	public void delete(Partida entity) {
-		// TODO Auto-generated method stub
-		
-	}
-
+	
+   /* private Class<Partida> getEntityClass() {
+		return (Class<Partida>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+	}*/
 	@Override
 	public List<Partida> findAll() {
 		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Partida get(Integer id) {
 		// TODO Auto-generated method stub
-		return null;
-	}
+				Session session = sessionFactory.getCurrentSession();
+				try {
+					session.beginTransaction();
+					List<Partida> list = session.createQuery("SELECT e FROM " + getClass().getSuperclass().getName() + " e").list();
+					return list;
+				} catch (HibernateException e) {
 
-	@Override
-	public Jugador ComprovarPropietari(Propietat propietat) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+				} finally {
+					session.getTransaction().commit();
+					session.close();
 
-	@Override
-	public boolean Comprar(Jugador jugador, Propietat propietat) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean Hipotecar(Jugador jugador, Propietat propietat) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean Deshipotecar(Jugador jugador, Propietat propietat) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public int modificarDiners(Jugador jugador, int quantitat) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public Propietat getPropietatenCasella(int posicio) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public boolean PagarLloguer(Jugador jugador, Propietat propietat) {
-		// TODO Auto-generated method stub
-		return false;
+				}
+				return null;
 	}
 
 	@Override
@@ -141,6 +102,7 @@ public class PartidaDAO implements IPartidaDAO{
 		j1.getPartides().add(p);
 		p.getJugadors().add(j1);
 		Fitxa f1 = new Fitxa();
+		j1.setFitxa(f1);
 		f1.setPosicio(0);
 		f1.setJugador(j1);
 		Jugador j2 = new Jugador();
@@ -149,6 +111,7 @@ public class PartidaDAO implements IPartidaDAO{
 		j2.getPartides().add(p);
 		p.getJugadors().add(j2);
 		Fitxa f2 = new Fitxa();
+		j2.setFitxa(f2);
 		f2.setPosicio(0);
 		f2.setJugador(j2);
 		Jugador j3 = new Jugador();
@@ -157,6 +120,7 @@ public class PartidaDAO implements IPartidaDAO{
 		j3.getPartides().add(p);
 		p.getJugadors().add(j3);
 		Fitxa f3 = new Fitxa();
+		j3.setFitxa(f3);
 		f3.setPosicio(0);
 		f3.setJugador(j3);
 		Jugador j4 = new Jugador();
@@ -165,8 +129,9 @@ public class PartidaDAO implements IPartidaDAO{
 		j4.getPartides().add(p);
 		p.getJugadors().add(j4);
 		Fitxa f4 = new Fitxa();
+		j4.setFitxa(f4);
 		f4.setPosicio(0);
-		f4.setJugador(j3);
+		f4.setJugador(j4);
 		List<Jugador> list = new ArrayList<Jugador>();
 		list.add(j1);
 		list.add(j2);
@@ -200,7 +165,7 @@ public class PartidaDAO implements IPartidaDAO{
 			jugador.setDiners(jugador.getDiners()+200);
 			jugador.getFitxa().setPosicio(jugador.getFitxa().getPosicio()%40);
 		}
-		GenericDAO gDAO = new GenericDAO();
+		PropietatDAO gDAO = new PropietatDAO();
 		Propietat p = gDAO.getPropietatenCasella(jugador.getFitxa().getPosicio());
 		if(p.getJugador()==null) {
 			int comprar = r.nextInt(0,2);
@@ -242,5 +207,45 @@ public class PartidaDAO implements IPartidaDAO{
 	public int getTorn() {
 		return torn;
 	}
+
+
+
+
+	@Override
+	public Partida get(Integer id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public void SaveOrUpdate(Partida entity) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void delete(Partida entity) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	public Partida getPartidaActiva() {
+		// TODO Auto-generated method stub
+		Session session = sessionFactory.openSession();
+		session.beginTransaction();
+		List<Partida> list = session.createQuery("SELECT e FROM " + getEntityClass().getName() + " e").list();
+		for (Partida partida : list) {
+			if(partida.getDataFi() == null)
+				session.getTransaction().commit();
+
+				return partida;
+		}
+		
+		return null;
+	}
+
 
 }

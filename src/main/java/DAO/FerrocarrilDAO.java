@@ -9,6 +9,7 @@ import org.hibernate.query.Query;
 
 import Classes.Ferrocarril;
 import Classes.Jugador;
+import Classes.Partida;
 import Classes.Propietat;
 
 public class FerrocarrilDAO implements IFerrocarrilDAO{
@@ -21,11 +22,6 @@ public class FerrocarrilDAO implements IFerrocarrilDAO{
 
 	}
 	
-	@Override
-	public void SaveOrUpdate(Ferrocarril entity) {
-		// TODO Auto-generated method stub
-		
-	}
 
 	@Override
 	public void delete(Integer id) {
@@ -33,11 +29,6 @@ public class FerrocarrilDAO implements IFerrocarrilDAO{
 		
 	}
 
-	@Override
-	public void delete(Ferrocarril entity) {
-		// TODO Auto-generated method stub
-		
-	}
 
 	@Override
 	public List<Ferrocarril> findAll() {
@@ -149,6 +140,42 @@ public class FerrocarrilDAO implements IFerrocarrilDAO{
 			}
 		}
 		return nFerros;
+	}
+
+	@Override
+	public void SaveOrUpdate(Ferrocarril entity) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void delete(Ferrocarril entity) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	public void afegirVeins(Ferrocarril f1, Ferrocarril f2, Ferrocarril f3, Ferrocarril f4) {
+		// TODO Auto-generated method stub
+		Session session = sessionFactory.openSession();
+		session.getTransaction().begin();
+		
+		f1.setAntFerro(f4);
+		f1.setSeguentFerro(f2);
+		f2.setAntFerro(f1);
+		f2.setSeguentFerro(f3);
+		f3.setAntFerro(f2);
+		f3.setSeguentFerro(f4);
+		f4.setAntFerro(f3);
+		f4.setSeguentFerro(f1);
+		
+		session.merge(f1);
+		session.merge(f2);
+		session.merge(f3);
+		session.merge(f4);
+
+		session.getTransaction().commit();
 	}
 
 }

@@ -3,35 +3,16 @@ package DAO;
 import java.io.Serializable;
 import java.util.List;
 
-import Classes.Jugador;
-import Classes.Propietat;
-
-public interface IGenericDAO<T, ID extends Serializable> {
-
-	void SaveOrUpdate(T entity);
-
-	void delete(ID id);
-
-	void delete(T entity);
-
-	List<T> findAll();
+public interface IGenericDAO <T, ID extends Serializable> {
 	
-	T get(ID id);
-	
-	Jugador ComprovarPropietari(Propietat propietat);
+	public void SaveOrUpdate(T entity);
 
-	boolean Comprar(Jugador jugador, Propietat propietat);
-	
-	boolean Hipotecar(Jugador jugador, Propietat propietat);
+	public void delete(Integer id);
 
-	boolean Deshipotecar(Jugador jugador, Propietat propietat);
+	public void delete(T entity);
 
-	int modificarDiners(Jugador jugador, int quantitat);
-	
-	Propietat getPropietatenCasella(int posicio);
+	public List<T> findAll();
 
-	boolean PagarLloguer(Jugador jugador, Propietat propietat);
-	
-	
-	
+	public T get(ID id);
+
 }

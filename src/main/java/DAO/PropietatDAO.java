@@ -2,20 +2,23 @@ package DAO;
 
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
 
 import Classes.Jugador;
+import Classes.Partida;
 import Classes.Propietat;
 
-public class GenericDAO<T, ID extends Serializable> implements IGenericDAO<T, ID> {
+public class PropietatDAO<T, ID extends Serializable> implements IPropietatDAO<T, ID> {
 
 	protected SessionFactory sessionFactory;
 
-	public GenericDAO() {
+	public PropietatDAO() {
 		// crides a la sessionFactory desde el singleton
 		sessionFactory = SessionManager.getSessionFactory();
 
@@ -37,26 +40,7 @@ public class GenericDAO<T, ID extends Serializable> implements IGenericDAO<T, ID
 
 	}
 
-	@Override
-	public void delete(ID id) {
-		Session session = sessionFactory.getCurrentSession();
-		try {
-			session.beginTransaction();
-			T entity = (T) session.get(getEntityClass(), id);
-			session.remove(entity);
-			session.getTransaction().commit();
-		} catch (HibernateException e) {
-			handleException(session, e);
-		}
-	}
-
-	@Override
-	public void delete(T entity) {
-		// TODO Auto-generated method stub
-
-	}
-
-	private Class<T> getEntityClass() {
+	public Class<T> getEntityClass() {
 		return (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
 	}
 
@@ -166,5 +150,34 @@ public class GenericDAO<T, ID extends Serializable> implements IGenericDAO<T, ID
 		// TODO Auto-generated method stub
 		return false;
 	}
+
+	public List<Propietat> getPropietatsByJugador(int id) {
+		// TODO Auto-generated method stub
+		Session session = sessionFactory.openSession();
+		session.getTransaction().begin();
+		List<Propietat> listp = new ArrayList<Propietat>();
+		List<Propietat> l = this.findAll();
+		for (Propietat propietat : l) {
+			if(propietat.getJugador().getId() == id) {
+				listp.add(propietat);
+			}
+		}
+		session.getTransaction().commit();
+		return listp;
+	}
+
+
+	@Override
+	public void delete(Integer id) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void delete(T entity) {
+		// TODO Auto-generated method stub
+		
+	}
+
 
 }
