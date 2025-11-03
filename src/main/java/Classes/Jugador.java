@@ -39,7 +39,7 @@ public class Jugador {
 	@Column
 	int victories;
 
-	@ManyToMany
+	@ManyToMany(fetch = jakarta.persistence.FetchType.EAGER)
 	Set<Partida> partides;
 
 	@OneToOne(mappedBy = "jugador")

@@ -39,16 +39,20 @@ public class JugadorDAO implements IJugadorDAO<Jugador, Integer> {
 	}
 
 	public List<Jugador> getJugadorsByPartida(int id) {
-		// TODO Auto-generated method stub
-		PartidaDAO pdao = new PartidaDAO();
-		Partida partida = pdao.get(id);
-		List<Jugador> allJugadors = this.findAll();
-		List<Jugador> jugadors = new ArrayList<Jugador>();
-		for (Jugador jugador : allJugadors) {
-			if(jugador.getPartides().contains(partida))
-				jugadors.add(jugador);
+		Session session = sessionFactory.getCurrentSession();
+		try {
+			session.beginTransaction();
+			Partida partida = session.get(Partida.class, id);
+			List<Jugador> jugadors = new ArrayList<>(partida.getJugadors());
+			return jugadors;
+		} catch (HibernateException e) {
+
+		} finally {
+			session.getTransaction().commit();
+			session.close();
+
 		}
-		return jugadors;
+		return null;
 	}
 
 	@Override
@@ -69,7 +73,7 @@ public class JugadorDAO implements IJugadorDAO<Jugador, Integer> {
 		
 	}
 	private Class<Jugador> getEntityClass() {
-		return (Class<Jugador>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+		return Jugador.class;
 	}
 	@Override
 	public List<Jugador> findAll() {
@@ -90,7 +94,18 @@ public class JugadorDAO implements IJugadorDAO<Jugador, Integer> {
 
 	@Override
 	public Jugador get(Integer id) {
-		// TODO Auto-generated method stub
+		Session session = sessionFactory.getCurrentSession();
+		try {
+			session.beginTransaction();
+			Jugador jugador = session.get(Jugador.class, id);
+			return jugador;
+		} catch (HibernateException e) {
+
+		} finally {
+			session.getTransaction().commit();
+			session.close();
+
+		}
 		return null;
 	}
 

@@ -40,7 +40,7 @@ public class CarrerDAO implements ICarrerDAO{
 		
 	}
 	private Class<Carrer> getEntityClass() {
-		return (Class<Carrer>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+		return Carrer.class;
 	}
 	@Override
 	public List<Carrer> findAll() {

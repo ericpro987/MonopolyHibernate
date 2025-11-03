@@ -7,9 +7,9 @@
 		<!-- Database Connection Settings -->
 		<property name="hibernate.connection.driver_class">com.mysql.cj.jdbc.Driver</property>
 		<!-- aixo ho heu de canviar per les vostres dades -->
-		<property name="hibernate.connection.url">jdbc:mysql://localhost:3306/MonopolyEric</property>
+		<property name="hibernate.connection.url">jdbc:mysql://localhost:3306/monopolyeric</property>
 		<property name="hibernate.connection.username">root</property>
-		<property name="hibernate.connection.password">super3</property>
+		<property name="hibernate.connection.password">holakase8</property>
 		<!--create: esborra la BD cada cop que fas try i comença desde 0 -->
 		<!--update: no esborra la BD, per tant, si fas inserts, en farà de nous -->
 		<property name="hibernate.hbm2ddl.auto">create</property>

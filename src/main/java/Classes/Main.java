@@ -144,7 +144,7 @@ public class Main {
             System.out.println("╔════════════════════════════════════════╗");
             System.out.println("║  16. PASSAR TORN                       ║");
             System.out.println("╚════════════════════════════════════════╝");
-            //provarPassarTorn();
+            provarPassarTorn();
             
             System.out.println("\n╔════════════════════════════════════════╗");
             System.out.println("║  ✓ TOTES LES PROVES COMPLETADES        ║");
@@ -455,16 +455,16 @@ public class Main {
         Jugador guanyador = partidaDAO.Reassignar();
         
         if (guanyador != null) {
-            System.out.println("✓ El jugador ha estat eliminat");
-            System.out.println("🏆 GUANYADOR: " + guanyador.getNom() + 
+            System.out.println("El jugador ha estat eliminat");
+            System.out.println(" GUANYADOR: " + guanyador.getNom() + 
                                " (Victòries: " + guanyador.getVictories() + ")");
         } else {
-            System.out.println("✓ El jugador ha estat eliminat. La partida continua.");
+            System.out.println("El jugador ha estat eliminat. La partida continua.");
         }
         System.out.println();
     }
     
-    /*private static void provarPassarTorn() {
+    private static void provarPassarTorn() {
         Partida partida = partidaDAO.getPartidaActiva();
         List<Jugador> jugadors = jugadorDAO.getJugadorsByPartida(partida.getId());
         
@@ -472,14 +472,14 @@ public class Main {
         for (Jugador j : jugadors) {
             if (j.isViu()) {
                 System.out.println("  " + j.getOrdre() + ". " + j.getNom() + 
-                                   (j.getId() == partida.getJugadorActiu().getId() ? " ← TORN ACTUAL" : ""));
+                                   (j.getId() == partidaDAO.getJugadorActiu().getId() ? " ← TORN ACTUAL" : ""));
             }
         }
         
         partidaDAO.PassarTorn();
         
         partida = partidaDAO.getPartidaActiva();
-        System.out.println("\n✓ Torn passat. Ara juga: " + partida.getJugadorActiu().getNom());
+        System.out.println("\n✓ Torn passat. Ara juga: " + partidaDAO.getJugadorActiu().getNom());
         System.out.println();
-    }*/
+    }
 }

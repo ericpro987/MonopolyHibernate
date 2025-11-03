@@ -38,9 +38,9 @@ public class PartidaDAO implements IPartidaDAO<Partida, Integer>{
 		
 	}
 	
-   /* private Class<Partida> getEntityClass() {
-		return (Class<Partida>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
-	}*/
+    private Class<Partida> getEntityClass() {
+		return Partida.class;
+	}
 	@Override
 	public List<Partida> findAll() {
 		// TODO Auto-generated method stub
@@ -62,22 +62,22 @@ public class PartidaDAO implements IPartidaDAO<Partida, Integer>{
 
 	@Override
 	public Jugador Reassignar() {
-		// TODO Auto-generated method stub
+			// TODO Auto-generated method stub
 		Session session = sessionFactory.openSession();
 		session.getTransaction().begin();
-		Query<Jugador> query = session.createQuery("select * from jugador where diners < 0");
+		Query<Jugador> query = session.createQuery("from Jugador where diners < 0");
 		List<Jugador> bancaRota = query.list();
 		for (Jugador jugador : bancaRota) {
 			jugador.setViu(false);
 			jugador.getPropietats().clear();
 			session.merge(jugador);
 		}
-		Query<Jugador> query2 = session.createQuery("select * from jugador");
+		Query<Jugador> query2 = session.createQuery("from Jugador");
 		List<Jugador> jugadorsActuals = query2.list();
 		if(jugadorsActuals.size() == 1) {
 			Jugador winner = jugadorsActuals.get(0);
 			winner.setVictories(winner.getVictories()+1);
-			Query<Partida> query3 = session.createQuery("select * from partida where dataFi is null");
+			Query<Partida> query3 = session.createQuery("from Partida where dataFi is null");
 			Partida partida = query3.getSingleResult();
 			partida.setDataFi(new Date());
 			session.merge(partida);
@@ -98,39 +98,39 @@ public class PartidaDAO implements IPartidaDAO<Partida, Integer>{
 		p.setDataInici(new Date());
 		Jugador j1 = new Jugador();
 		j1.setNom("Jugador1");
+		j1.setOrdre(0);
 		j1.setViu(true);
 		j1.getPartides().add(p);
 		p.getJugadors().add(j1);
 		Fitxa f1 = new Fitxa();
 		j1.setFitxa(f1);
-		f1.setPosicio(0);
 		f1.setJugador(j1);
 		Jugador j2 = new Jugador();
 		j2.setNom("Jugador2");
+		j2.setOrdre(1);
 		j2.setViu(true);
 		j2.getPartides().add(p);
 		p.getJugadors().add(j2);
 		Fitxa f2 = new Fitxa();
 		j2.setFitxa(f2);
-		f2.setPosicio(0);
 		f2.setJugador(j2);
 		Jugador j3 = new Jugador();
 		j3.setNom("Jugador3");
+		j3.setOrdre(2);
 		j3.setViu(true);
 		j3.getPartides().add(p);
 		p.getJugadors().add(j3);
 		Fitxa f3 = new Fitxa();
 		j3.setFitxa(f3);
-		f3.setPosicio(0);
 		f3.setJugador(j3);
 		Jugador j4 = new Jugador();
-		j4.setNom("Jugador3");
+		j4.setNom("Jugador4");
+		j4.setOrdre(3);
 		j4.setViu(true);
 		j4.getPartides().add(p);
 		p.getJugadors().add(j4);
 		Fitxa f4 = new Fitxa();
 		j4.setFitxa(f4);
-		f4.setPosicio(0);
 		f4.setJugador(j4);
 		List<Jugador> list = new ArrayList<Jugador>();
 		list.add(j1);
@@ -139,7 +139,7 @@ public class PartidaDAO implements IPartidaDAO<Partida, Integer>{
 		list.add(j4);
 		Collections.shuffle(list);
 		for(int i = 0; i < list.size(); i++) {
-			list.get(i).setOrdre(i+1);
+			list.get(i).setOrdre(i);
 			list.get(i).setDiners(1500);
 		}
 		session.persist(p);
@@ -158,45 +158,25 @@ public class PartidaDAO implements IPartidaDAO<Partida, Integer>{
 	@Override
 	public void Roll(Jugador jugador) {
 		// TODO Auto-generated method stub
-		Random r = new Random();
-		dau = r.nextInt(1,7);
-		jugador.getFitxa().setPosicio(jugador.getFitxa().getPosicio()+dau);
-		if(40-jugador.getFitxa().getPosicio()<= 0) {
-			jugador.setDiners(jugador.getDiners()+200);
-			jugador.getFitxa().setPosicio(jugador.getFitxa().getPosicio()%40);
-		}
-		PropietatDAO gDAO = new PropietatDAO();
-		Propietat p = gDAO.getPropietatenCasella(jugador.getFitxa().getPosicio());
-		if(p.getJugador()==null) {
-			int comprar = r.nextInt(0,2);
-			if(comprar == 0) {
-				if(jugador.getDiners()>=p.getPreu()) {
-					gDAO.Comprar(jugador, p);
+		Random rand = new Random();
+		int roll = rand.nextInt(1,7);
+		dau = roll;
+		Fitxa fitxa = jugador.getFitxa();
+		int novaPosicio = (fitxa.getPosicio() + roll)%40;
+		CarrerDAO carrerDAO = new CarrerDAO();
+		Propietat propietat = carrerDAO.getPropietatenCasella(novaPosicio);
+		if(propietat != null) {
+			if(propietat.getJugador() != null) {
+				if(propietat.getJugador() != jugador) {
+					carrerDAO.PagarLloguer(jugador, propietat);
 				}
-			}else {
-				
 			}
-		}else if(p.getJugador() == jugador) {
-			if(p instanceof Ferrocarril) {
-				int ferro = r.nextInt(0,2);
-				FerrocarrilDAO fDAO = new FerrocarrilDAO();
-				if(ferro == 0)
-					fDAO.transportFerrocarril(jugador, ((Ferrocarril) p).getAntFerro());
-				else
-					fDAO.transportFerrocarril(jugador, ((Ferrocarril) p).getSeguentFerro());
-			}
-		}else if(p instanceof Carrer){
-			CarrerDAO c = new CarrerDAO();
-				c.PagarLloguer(jugador, p);
-		}else if(p instanceof Ferrocarril){
-			FerrocarrilDAO fDAO = new FerrocarrilDAO();
-			fDAO.PagarLloguer(jugador, p);
-		}else if(p instanceof CompanyiaServeis){
-			CompanyiaServeisDAO csDAO = new CompanyiaServeisDAO();
-			csDAO.PagarLloguer(jugador, p);
+			
 		}
+		fitxa.setPosicio(novaPosicio);
 	}
 	int torn = 0;
+	
 	@Override
 	public void PassarTorn() {
 		// TODO Auto-generated method stub
@@ -209,11 +189,38 @@ public class PartidaDAO implements IPartidaDAO<Partida, Integer>{
 	}
 
 
-
+public Jugador getJugadorActiu() {
+    Session session = sessionFactory.openSession();
+    try {
+        session.beginTransaction();
+        Query<Jugador> query = session.createQuery("from Jugador where ordre = :ordre and viu = true", Jugador.class);
+        query.setParameter("ordre", torn);
+        Jugador jugador = query.uniqueResult();
+        session.getTransaction().commit();
+        return jugador;
+    } catch (Exception e) {
+        if (session.getTransaction().isActive()) session.getTransaction().rollback();
+        return null;
+    } finally {
+        session.close();
+    }
+	}
 
 	@Override
 	public Partida get(Integer id) {
 		// TODO Auto-generated method stub
+		Session session = sessionFactory.getCurrentSession();
+		try {
+			session.beginTransaction();
+			Partida partida = session.get(Partida.class, id);
+			return partida;
+		} catch (HibernateException e) {
+
+		} finally {
+			session.getTransaction().commit();
+			session.close();
+
+		}
 		return null;
 	}
 

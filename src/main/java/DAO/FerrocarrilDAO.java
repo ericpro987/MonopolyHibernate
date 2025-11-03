@@ -33,8 +33,26 @@ public class FerrocarrilDAO implements IFerrocarrilDAO{
 	@Override
 	public List<Ferrocarril> findAll() {
 		// TODO Auto-generated method stub
+		Session session = sessionFactory.getCurrentSession();
+		try {
+			session.beginTransaction();
+			List<Ferrocarril> list = session.createQuery("SELECT e FROM " + getEntityClass().getName() + " e").list();
+			return list;
+		} catch (Exception e) {
+
+		} finally {
+			session.getTransaction().commit();
+			session.close();
+
+		}
 		return null;
 	}
+
+	private Class<Ferrocarril> getEntityClass() {
+		// TODO Auto-generated method stub
+		return Ferrocarril.class;
+	}
+
 
 	@Override
 	public Ferrocarril get(Integer id) {

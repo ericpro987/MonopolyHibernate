@@ -33,7 +33,7 @@ public class Partida {
 	@Column
 	String estat;
 
-	@ManyToMany(mappedBy = "partides")
+	@ManyToMany(mappedBy = "partides", fetch = jakarta.persistence.FetchType.EAGER)
 	Set<Jugador> jugadors;
 
 	public Date getDataInici() {

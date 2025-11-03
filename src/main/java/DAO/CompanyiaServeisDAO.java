@@ -42,7 +42,24 @@ public class CompanyiaServeisDAO implements ICompanyiaServeisDAO{
 	@Override
 	public List<CompanyiaServeis> findAll() {
 		// TODO Auto-generated method stub
+		Session session = sessionFactory.getCurrentSession();
+		try {
+			session.beginTransaction();
+			List<CompanyiaServeis> list = session.createQuery("SELECT e FROM " + getEntityClass().getName() + " e").list();
+			return list;
+		} catch (Exception e) {
+
+		} finally {
+			session.getTransaction().commit();
+			session.close();
+
+		}
 		return null;
+	}
+
+	private Class<CompanyiaServeis> getEntityClass() {
+		// TODO Auto-generated method stub
+		return CompanyiaServeis.class;
 	}
 
 	@Override

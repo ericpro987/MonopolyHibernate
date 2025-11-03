@@ -40,8 +40,8 @@ public class PropietatDAO<T, ID extends Serializable> implements IPropietatDAO<T
 
 	}
 
-	public Class<T> getEntityClass() {
-		return (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+	public Class<Propietat> getEntityClass() {
+		return Propietat.class;
 	}
 
 	@Override
@@ -141,8 +141,18 @@ public class PropietatDAO<T, ID extends Serializable> implements IPropietatDAO<T
 	public Propietat getPropietatenCasella(int posicio) {
 		// TODO Auto-generated method stub
 		Session session = sessionFactory.getCurrentSession();
-		Propietat p = (Propietat) session.createQuery("SELECT * FROM propietat p WHERE p.posicio = "+posicio).uniqueResult();
-		return p;
+		try {
+			session.beginTransaction();
+			Query<Propietat> query = session
+					.createQuery("FROM Propietat WHERE posicio = :posicio", Propietat.class);
+			query.setParameter("posicio", posicio);
+			Propietat propietat = query.uniqueResult();
+			session.getTransaction().commit();
+			return propietat;
+		} catch (HibernateException e) {
+			handleException(session, e);
+			return null;
+		}
 	}
 
 	@Override
